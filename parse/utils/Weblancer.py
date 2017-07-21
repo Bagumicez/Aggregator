@@ -1,14 +1,34 @@
+import requests
 from bs4 import BeautifulSoup
 from time import sleep
-import requests
 from datetime import date
+from parse.models import Order
 
 
-KEYWORDS = ['python', 'django']
+KEYWORDS = ['python', 'django', 'machine learning']
 PAGE_PIECE = '&page='
 KEYWORD_PIECE = '&keywords='
 DOMEN = 'https://www.weblancer.net'
 BASE_URL = 'https://www.weblancer.net/jobs/?action=search'
+
+
+def need_update(result):
+    qnt = 0
+    cur_len = len(result)
+    for i in range(0, cur_len):
+        if Order.objects.filter(url=result[i]['url']).exists():
+            qnt += 1
+    if qnt == cur_len:
+        print('no need for update')
+        return False
+    else:
+        return True
+
+
+def prepare_network():
+    global s
+    s = requests.Session()
+    s.get('https://www.weblancer.net/')
 
 
 def format_date(str):
@@ -20,7 +40,7 @@ def format_date(str):
 def get_html(url):
     headers = {'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
                              'Chrome/59.0.3071.115 Safari/537.36'}
-    response = requests.get(url, headers=headers)
+    response = s.get(url, headers=headers)
     sleep(4)
     return response.content
 
@@ -73,19 +93,24 @@ def parse(html):
 
 def main():
     all = []
+    prepare_network()
     for name in KEYWORDS:
         total_page = get_total_page(BASE_URL + KEYWORD_PIECE + name)
         if total_page == 1:
             cur_url = BASE_URL + KEYWORD_PIECE + name
             cur_html = get_html(cur_url)
             cur_res = parse(cur_html)
-            all.append(cur_res)
+            if need_update(cur_res):
+                all.append(cur_res)
         else:
             for page in range(1, total_page+1):
                 cur_url = BASE_URL + KEYWORD_PIECE + name + PAGE_PIECE + str(page)
                 cur_html = get_html(cur_url)
                 cur_res = parse(cur_html)
-                all.append(cur_res)
+                if need_update(cur_res):
+                    all.append(cur_res)
+                else:
+                    break
     return all
 
 

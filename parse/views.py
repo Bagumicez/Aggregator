@@ -10,9 +10,7 @@ def index(request):
 
 
 def load(request, source):
-    Order.objects.filter(source=source).delete()
     result = Parse.start_parse(source)
-    print(result)
     Order.save_result(result, source)
     return HttpResponseRedirect(reverse('parse:index', args=()))
 

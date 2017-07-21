@@ -2,12 +2,28 @@ import requests
 from bs4 import BeautifulSoup
 from time import sleep
 from datetime import date
-import csv
+from parse.models import Order
 
 
 BASE_URL = 'https://freelansim.ru/?'
-PYTHON_HEAD = '&q=python'
+KEYWORD_HEAD = '&q='
 PAGE_HEAD = '&page='
+
+
+KEYWORD_LIST = ['python', 'machine+learning']
+
+
+def need_update(result):
+    qnt = 0
+    cur_len = len(result)
+    for i in range(0, cur_len):
+        if Order.objects.filter(url=result[i]['url']).exists():
+            qnt += 1
+    if qnt == cur_len:
+        print('no need for update')
+        return False
+    else:
+        return True
 
 
 def format_date(str):
@@ -71,21 +87,24 @@ def parse(html):
 
 def main():
     all = []
-    total_pages = get_total_page(BASE_URL + PYTHON_HEAD)
-    if total_pages != 1:
-        for page in range(1, total_pages+1):
-            cur_url = BASE_URL + PYTHON_HEAD + PAGE_HEAD + str(page)
+    for word in KEYWORD_LIST:
+        total_pages = get_total_page(BASE_URL + KEYWORD_HEAD + word)
+        if total_pages != 1:
+            for page in range(1, total_pages+1):
+                cur_url = BASE_URL + KEYWORD_HEAD + word + PAGE_HEAD + str(page)
+                cur_html = get_html(cur_url)
+                cur_res = parse(cur_html)
+                if need_update(cur_res):
+                    all.append(cur_res)
+                else:
+                    break
+        else:
+            cur_url = BASE_URL + KEYWORD_HEAD + word
             cur_html = get_html(cur_url)
             cur_res = parse(cur_html)
-            all.append(cur_res)
-    else:
-        cur_url = BASE_URL + PYTHON_HEAD
-        cur_html = get_html(cur_url)
-        cur_res = parse(html)
-        all.append(cur_res)
+            if need_update(cur_res):
+                all.append(cur_res)
     return all
-
-        
 
 
 if __name__ == '__main__':

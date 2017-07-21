@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from time import sleep
 from datetime import date
+from parse.models import Order
 
 BASE_URL = 'https://www.fl.ru/projects/'
 PAGE_PIECE = '?page='
@@ -43,6 +44,20 @@ payload = {
 }
 
 keyword_list = ['flask', 'machine learning', 'django', 'python']
+
+
+def need_update(result):
+    qnt = 0
+    cur_len = len(result)
+    for i in range(0, cur_len):
+        if Order.objects.filter(url=result[i]['url']).exists():
+            qnt += 1
+    if qnt == cur_len:
+        print('no need for update')
+        return False
+    else:
+        return True
+
 
 
 def format_date(str):
@@ -117,7 +132,10 @@ def main():
                 cur_url = BASE_URL + PAGE_PIECE + str(count) + KIND_PIECE
                 cur_html = get_html(cur_url)
                 cur_res = parse(cur_html)
-                notes.append(cur_res)
+                if need_update(cur_res):
+                    notes.append(cur_res)
+                else:
+                    break
             except AttributeError:
                 break
         print(notes)

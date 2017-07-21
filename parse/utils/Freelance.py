@@ -2,11 +2,25 @@ import requests
 from datetime import date
 from bs4 import BeautifulSoup
 from time import sleep
-import csv
+from parse.models import Order
+
 
 URLS = ['https://freelance.ru/projects/?cat=4&spec=446',
         'https://freelance.ru/projects/?cat=4&spec=312']
 PAGE_HEAD = '&page='
+
+
+def need_update(result):
+    qnt = 0
+    cur_len = len(result)
+    for i in range(0, cur_len):
+        if Order.objects.filter(url=result[i]['url']).exists():
+            qnt += 1
+    if qnt == cur_len:
+        print('no need for update')
+        return False
+    else:
+        return True
 
 
 def format_date(str):
@@ -78,11 +92,15 @@ def main():
                 cur_url = url + PAGE_HEAD + str(page)
                 cur_html = get_html(cur_url)
                 cur_res = parse(cur_html)
-                all.append(cur_res)
+                if need_update(cur_res):
+                    all.append(cur_res)
+                else:
+                    break
         else:
             cur_html = get_html(url)
             cur_res = parse(cur_html)
-            all.append(cur_res)
+            if need_update(cur_res):
+                all.append(cur_res)
     return all
 
 
