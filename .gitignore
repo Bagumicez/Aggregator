@@ -1,0 +1,7 @@
+.git/
+.idea/
+db.sqlite3
+App/__pycache__/
+App/settings.py
+parse/migrations
+parse/__pycache__/

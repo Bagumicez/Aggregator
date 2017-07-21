@@ -1,0 +1,14 @@
+{% for order in data %}
+	<h1>{{order.title}}</h1><br>
+	<strong>{{order.description}}</strong><br>
+	<ul>
+		<li>{{order.price}}</li>
+		<li><a href='{{order.url}}' target="_blank">link</a></li>
+		<li>{{order.time_place}}</li>
+		<li>Views : {{order.view}}</li>
+		<li>Responses : {{order.responses}}</li>
+		<li>Time: {{order.time_place}}</li>
+	</ul>
+	<hr>
+{% endfor %}
+<a href='{% url 'parse:index' %}'>Back</a>
