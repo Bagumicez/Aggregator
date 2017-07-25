@@ -41,7 +41,7 @@ def format_date(str):
 
 def get_html(url):
     response = requests.get(url)
-    sleep(4)
+    sleep(2)
     return response.content
 
 
@@ -49,8 +49,11 @@ def get_total_page(url):
     html = get_html(url)
     soup = BeautifulSoup(html, 'lxml')
     pagination = soup.find('div', class_='pagination')
-    links = pagination.find_all('a')
-    last_page = links[-2].get('href')
+    try:
+        links = pagination.find_all('a')
+        last_page = links[-2].get('href')
+    except AttributeError:
+        return 1
     return int(last_page.split('=')[1][0])
 
 

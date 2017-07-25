@@ -75,7 +75,7 @@ def prepare_network():
 
 def get_html(url):
     response = s.get(url, params=header)
-    sleep(3)
+    sleep(2)
     return response.content
 
 

@@ -5,3 +5,4 @@ App/__pycache__/
 App/settings.py
 parse/migrations
 parse/__pycache__/
+parse/utils/__pycache__/

@@ -41,7 +41,7 @@ def get_html(url):
     headers = {'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
                              'Chrome/59.0.3071.115 Safari/537.36'}
     response = s.get(url, headers=headers)
-    sleep(4)
+    sleep(2)
     return response.content
 
 

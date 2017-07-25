@@ -38,7 +38,7 @@ def format_date(str):
 
 def get_html(url):
     response = requests.get(url)
-    sleep(4)
+    sleep(2)
     return response.content
 
 
