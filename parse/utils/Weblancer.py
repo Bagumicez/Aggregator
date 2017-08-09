@@ -1,11 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
+from urllib import parse as ps
 from time import sleep
 from datetime import date
 from parse.models import Order
 
 
-KEYWORDS = ['python', 'django', 'machine learning']
+KEYWORDS = ['flask', 'machine', 'django', 'python', 'нейронная', 'распознание', 'машинное', 'sqlalchemy', 'scipy',
+                'numpy', 'haskell', 'tensorflow', 'scikit', 'чат-бот', 'чатбот', 'парсинг', 'science', 'keras', 'cntk',
+                'theano', 'scrapy', 'НИОКР']
 PAGE_PIECE = '&page='
 KEYWORD_PIECE = '&keywords='
 DOMEN = 'https://www.weblancer.net'
@@ -59,7 +62,7 @@ def get_total_page(url):
 def parse(html):
     orders = []
     soup = BeautifulSoup(html, 'lxml')
-    root = soup.find('div', class_='container-fluid cols_table show_visited')
+    root = soup.select_one('body > div.container.page_body > div > div.col-xs-12.page_content.col-lg-9')
     all_oder = root.find_all('div', class_='row')
     for order in all_oder:
         title_url = order.find('h2', class_='title')
@@ -95,6 +98,9 @@ def main():
     all = []
     prepare_network()
     for name in KEYWORDS:
+        print('current name ', name)
+        name = ps.urlencode({"n": name.encode('windows-1251')}).split('=')[-1]
+        print('decoded name', name)
         total_page = get_total_page(BASE_URL + KEYWORD_PIECE + name)
         if total_page == 1:
             cur_url = BASE_URL + KEYWORD_PIECE + name

@@ -10,7 +10,9 @@ KEYWORD_HEAD = '&q='
 PAGE_HEAD = '&page='
 
 
-KEYWORD_LIST = ['python', 'machine+learning']
+KEYWORD_LIST = ['flask', 'machine', 'django', 'python', 'нейронная', 'распознание', 'машинное', 'sqlalchemy', 'scipy',
+                'numpy', 'haskell', 'tensorflow', 'scikit', 'чат-бот', 'чатбот', 'парсинг', 'science', 'keras', 'cntk',
+                'theano', 'scrapy', 'НИОКР']
 
 
 def need_update(result):
@@ -31,7 +33,7 @@ def format_date(str):
     date_list = date_time_list[0].split(' ')
     dict_of_mounth = {'января': 1, 'февраля': 2, 'марта': 3, 'апреля': 4,
                       'мая': 5, 'июня': 6, 'июля': 7, 'августа': 8,
-                      'сентября': 9, 'октрября': 10, 'ноября': 11, 'декабря': 12}
+                      'сентября': 9, 'октября': 10, 'ноября': 11, 'декабря': 12}
     year = int(date_list[-1])
     month = dict_of_mounth[date_list[1]]
     day = int(date_list[0])

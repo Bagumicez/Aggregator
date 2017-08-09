@@ -43,7 +43,9 @@ payload = {
     "pf_keywords": "",
 }
 
-keyword_list = ['flask', 'machine learning', 'django', 'python']
+keyword_list = ['flask', 'machine', 'django', 'python', 'нейронная', 'распознание', 'машинное', 'sqlalchemy', 'scipy',
+                'numpy', 'haskell', 'tensorflow', 'scikit', 'чат-бот', 'чатбот', 'парсинг', 'science', 'keras', 'cntk',
+                'theano', 'scrapy', 'НИОКР']
 
 
 def need_update(result):
@@ -99,8 +101,7 @@ def parse(html):
             descr_page = BeautifulSoup(descr_html, 'lxml')
             descr_block = descr_page.find('div', class_='b-layout__txt b-layout__txt_padbot_20').text.strip()
             time_block = descr_page.find('div', class_='b-layout__txt b-layout__txt_padbot_30', recursive=True)
-            time_place = \
-            time_block.find('div', class_='b-layout__txt b-layout__txt_fontsize_11').text.strip().split(' ')[0]
+            time_place = time_block.find('div', class_='b-layout__txt b-layout__txt_fontsize_11').text.strip().split(' ')[0]
             time = format_date(time_place)
             views = order.find('div', class_='b-post__foot b-post__foot_padtop_15')
             elem = views.script.text.split('</span>')
